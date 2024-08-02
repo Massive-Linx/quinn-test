@@ -1,6 +1,10 @@
-use std::{fs::File, io::BufReader, sync::Arc};
+use std::{
+    fs::File, 
+    io::BufReader, 
+    sync::Arc,
+};
 
-use quinn::{Endpoint, SendStream};
+use quinn::Endpoint;
 use quinn_proto::ClientConfig;
 
 #[tokio::main]
@@ -24,11 +28,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("connection established {:?}", connection.rtt());
     
     let (mut send, mut recv) = connection.open_bi().await?;
-    
+
     loop {
         let message = b"Ping from client!";
         send.write_all(message).await?;
-        send.finish().await?;
+        //send.finish().await?;
         println!("Sent: {:?}", String::from_utf8_lossy(message));
 
         let mut buffer = vec![0; 1024];

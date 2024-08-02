@@ -1,13 +1,11 @@
 use std::{
-    fs,
     fs::File,
     net::SocketAddr,
     sync::Arc,
     io::BufReader,
 };
 
-use quinn::{Endpoint, ServerConfig, TransportConfig};
-use ::rustls::{Certificate, PrivateKey};
+use quinn::{Endpoint, ServerConfig};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -49,6 +47,7 @@ async fn handle_connection(connecting: quinn::Connecting) {
                     Ok((mut send, mut recv)) => {
                         // tokio::spawn(handle_stream(state.clone(), conn_state.clone(), send, recv))
                         let message = b"Ping from server!";
+
                         loop {
                             let mut buffer = vec![0; 1024];
                             match recv.read(&mut buffer).await {
@@ -59,7 +58,7 @@ async fn handle_connection(connecting: quinn::Connecting) {
                                         Err(e) => println!("Failed to convert to string: {}", e),
                                     }
                                     send.write_all(message).await.expect("Failed to send");
-                                    send.finish().await.expect("Failed to finish send");
+                                    //send.finish().await.expect("Failed to finish send");
                                 },
                                 Ok(None) => {
                                     println!("Stream closed");
